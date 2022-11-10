@@ -1,6 +1,7 @@
 package com.sprint.practice.controller;
 
 import com.sprint.practice.domain.Customer;
+import com.sprint.practice.exceptions.CustomerAlreadyExistException;
 import com.sprint.practice.exceptions.CustomerNotFoundException;
 import com.sprint.practice.exceptions.ProductNotFoundException;
 import com.sprint.practice.service.CustomerService;
@@ -19,8 +20,16 @@ public class CustomerController {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity<?> saveCustomer(@RequestBody Customer customer){
-        return new ResponseEntity<>(customerService.addCustomer(customer), HttpStatus.CREATED);
+    public ResponseEntity<?> saveCustomer(@RequestBody Customer customer) throws CustomerAlreadyExistException {
+        ResponseEntity<?> responseEntity = null;
+
+        try {
+            responseEntity = new ResponseEntity<>(customerService.addCustomer(customer), HttpStatus.CREATED);
+        }catch (CustomerAlreadyExistException e){
+            throw new CustomerAlreadyExistException();
+        }
+
+        return responseEntity;
     }
 
     @GetMapping("/customers")

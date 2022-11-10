@@ -1,6 +1,7 @@
 package com.sprint.practice.service;
 
 import com.sprint.practice.domain.Customer;
+import com.sprint.practice.exceptions.CustomerAlreadyExistException;
 import com.sprint.practice.exceptions.CustomerNotFoundException;
 import com.sprint.practice.exceptions.ProductNotFoundException;
 import com.sprint.practice.repository.CustomerRepository;
@@ -18,7 +19,11 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public Customer addCustomer(Customer customer) {
+    public Customer addCustomer(Customer customer) throws CustomerAlreadyExistException {
+        if (customerRepository.findById(customer.getCustomerId()).isPresent()){
+            throw new CustomerAlreadyExistException();
+        }
+
         return customerRepository.save(customer);
     }
 
